@@ -42,3 +42,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 1. `touch tsconfig.json`
 2. `npm install --save-dev typescript @types/react @types/node` or `yarn add --dev typescript @types/react @types/node`
 3. rename file use `.js` extension to `.tsx` or `.ts` for suitable
+
+## File system routing
+
+follow link [File system routing in NextJs 11](https://drive.google.com/drive/folders/14S5DNUTTASaNwHZN-rfky78WU2I4sBZz)
