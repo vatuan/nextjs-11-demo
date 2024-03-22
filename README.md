@@ -107,24 +107,25 @@ import Link from 'next/link'
 
 ![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711091872/NextJs%20%5BPage%20routers%5D/pre-rendering_codmnn.png)
 
-1. Write code ben phia react
-2. Build o mode `production`. Dung ReactDomServer de build ra nhung file `HTML`
-3. Khi user request len server (hay noi cach khac la truy cap vao duong dan vd`/about`) thi server se tra ve file HTML (vd: `about.html`), file HTML nay da duoc render san co day du layout, text,... Tuy nhien no chi la nhung content tĩnh chua co event
+1. Write code bên phía react
+2. Build ở mode `production`. Dùng ReactDomServer để build ra những file `HTML`
+3. Khi user request lên server (hay nói cách khác là truy cập vào đường dẫn vd `/about` ) thì server sẽ trả về file HTML (vd: `about.html` ), file HTML này đã được render sẵn có đầy đủ layout, text,... Tuy nhiên nó chỉ là những content tĩnh chưa có event
 4. Sau khi page đã load được nội dung của file HTML lên rồi thì nó sé load thêm file `JS` và nó thực hiện quá trình gọi là `Hydration` (Dùng hàm ReactDOM.hydrate() attach event listener lên markup đã được render phía server)
 
-![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711093729/NextJs%20%5BPage%20routers%5D/pre-rendering-012_airhff.png)
 Có 2 loại pre-rendering là
 
 - SSG [Static Site Generation] (Khá xịn, được dùng default bới NextJs)
 - SSR [Server Site Rendering]
 
-**Pre rendering**: có nghĩa là sẽ render sẵn file `HTML` ở phía _server_, khi user truy cập vào đường dẫn thì sẽ có file HTML sẵn để show lên (lúc này vẫn là _content tĩnh_), sau đó sẽ load thêm `Javascript` và khi đó sẽ thực hiện quá trình **Hydration**
+![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711093729/NextJs%20%5BPage%20routers%5D/pre-rendering-012_airhff.png)
+
+**_Pre rendering_**: có nghĩa là sẽ render sẵn file `HTML` ở phía _server_, khi user truy cập vào đường dẫn thì sẽ có file HTML sẵn để show lên (lúc này vẫn là _content tĩnh_), sau đó sẽ load thêm `Javascript` và khi đó sẽ thực hiện quá trình **Hydration**
 
 > View page source
 
 ![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711095419/NextJs%20%5BPage%20routers%5D/page-source-pre-render_xhjfix.png)
 
-**No Pre-rendering** có nghĩa là trong lần render đầu tiên, file `HTML` tải về là file rỗng (chỉ có 1 div là root thôi) ,sau đó sẽ load `Javascript` lên để render DOM
+**_No Pre-rendering_** có nghĩa là trong lần render đầu tiên, file `HTML` tải về là file rỗng (chỉ có 1 div là root thôi) ,sau đó sẽ load `Javascript` lên để render DOM
 
 > View page source
 
