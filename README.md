@@ -100,3 +100,69 @@ import Link from 'next/link'
           </Link>
     </div>
 ```
+
+## SSR, CSR, SSG and ISR
+
+### Pre-rendering
+
+![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711091872/NextJs%20%5BPage%20routers%5D/pre-rendering_codmnn.png)
+
+1. Write code ben phia react
+2. Build o mode `production`. Dung ReactDomServer de build ra nhung file `HTML`
+3. Khi user request len server (hay noi cach khac la truy cap vao duong dan vd`/about`) thi server se tra ve file HTML (vd: `about.html`), file HTML nay da duoc render san co day du layout, text,... Tuy nhien no chi la nhung content tĩnh chua co event
+4. Sau khi page đã load được nội dung của file HTML lên rồi thì nó sé load thêm file `JS` và nó thực hiện quá trình gọi là `Hydration` (Dùng hàm ReactDOM.hydrate() attach event listener lên markup đã được render phía server)
+
+![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711093729/NextJs%20%5BPage%20routers%5D/pre-rendering-012_airhff.png)
+Có 2 loại pre-rendering là
+
+- SSG [Static Site Generation] (Khá xịn, được dùng default bới NextJs)
+- SSR [Server Site Rendering]
+
+**Pre rendering**: có nghĩa là sẽ render sẵn file `HTML` ở phía _server_, khi user truy cập vào đường dẫn thì sẽ có file HTML sẵn để show lên (lúc này vẫn là _content tĩnh_), sau đó sẽ load thêm `Javascript` và khi đó sẽ thực hiện quá trình **Hydration**
+
+> View page source
+
+![Pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711095419/NextJs%20%5BPage%20routers%5D/page-source-pre-render_xhjfix.png)
+
+**No Pre-rendering** có nghĩa là trong lần render đầu tiên, file `HTML` tải về là file rỗng (chỉ có 1 div là root thôi) ,sau đó sẽ load `Javascript` lên để render DOM
+
+> View page source
+
+![No pre-rendering](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711095426/NextJs%20%5BPage%20routers%5D/np-prerendering_cbq2gt.png)
+
+### SSG (Static Site Generation)
+
+![SSG](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711096154/NextJs%20%5BPage%20routers%5D/SSG_ymuozu.png)
+
+Tại thời điểm build project các file `HTML` tĩnh sẽ được tạo ra, khi mỗi user request lên sẽ trả về file HTML đã build sẵn, các file HTML đã được build có thể được cache trên CDN -> tái sử dụng trên các request -> tối ưu preformance
+_Note_: Đây là ở bước **build-time**, khi chạy lệnh `build` (build-time)
+
+### SSR (Server Side Rendering)
+
+![SSR](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711096983/NextJs%20%5BPage%20routers%5D/SSR_qflypd.png)
+
+Khi user gửi 1 request --> server NextJs sẽ đi xử lý dữ liệu --> Tạo ra file `HTML` --> trả về cho user
+Cứ mỗi lần gửi user gửi request lên thì server sẽ phải xử lý dữ liệu và gửi về cho user. Nếu có nhiều request như vậy thì server làm việc khá nhọc -> tốn resource của server.
+
+Với mỗi lần request lên server sẽ tùy thuộc vào server của bạn tính toán nhanh hay chậm để tạo ra file `HTML` --> user sẽ phải đợi để server tạo ra file `HTML`. Có 1 chỉ số là `Time to first byte` có nghĩa là server xử lí càng lâu thì chỉ số này càng lớn
+
+### CSR (Client Side Rendering)
+
+![CSR](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711098184/NextJs%20%5BPage%20routers%5D/CRS_bfeesd.png)
+
+Trong NextJs khi nhắc đến _Client Site Rendering (CSR)_ thì có thể kết hợp với _Static Site Generation (SSG)_ -> tạo ra các file markup sẵn.Khi show lên được cái markup sẵn rồi thì đi fetch dữ liệu để show dữ liệu động đó lên
+Làm trong TH: dữ liệu không cần render sẵn bên phía server, không cần SEO, cho các private website
+
+### ISR (Incremental Static Regeneration)
+
+Refer: https://www.smashingmagazine.com/2021/04/incremental-static-regeneration-nextjs/
+
+### Pre-rendering form is per-page basis
+
+Mỗi trang có thể config theo 1 kiểu pre-rendering khác nhau tùy thuộc vào sự tham gia của các hàm như hình bên dưới
+
+![basis](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1711099640/NextJs%20%5BPage%20routers%5D/awesine_irh49r.png)
+
+#### Link hay nen tham khao
+
+- Khi nao nen dung CSR, SSG : https://github.com/vercel/next.js/discussions/10437#discussioncomment-90459
