@@ -112,7 +112,7 @@ import Link from 'next/link'
 3. Khi user request lên server (hay nói cách khác là truy cập vào đường dẫn vd `/about` ) thì server sẽ trả về file HTML (vd: `about.html` ), file HTML này đã được render sẵn có đầy đủ layout, text,... Tuy nhiên nó chỉ là những content tĩnh chưa có event
 4. Sau khi page đã load được nội dung của file HTML lên rồi thì nó sé load thêm file `JS` và nó thực hiện quá trình gọi là `Hydration` (Dùng hàm ReactDOM.hydrate() attach event listener lên markup đã được render phía server)
 
-Có 2 loại pre-rendering là
+#### Có 2 loại pre-rendering là
 
 - SSG [Static Site Generation] (Khá xịn, được dùng default bới NextJs)
 - SSR [Server Site Rendering]
@@ -167,3 +167,75 @@ Mỗi trang có thể config theo 1 kiểu pre-rendering khác nhau tùy thuộc
 #### Link hay nen tham khao
 
 - Khi nao nen dung CSR, SSG : https://github.com/vercel/next.js/discussions/10437#discussioncomment-90459
+
+## Automatic Static Optimization
+
+- NextJs sẽ xác định 1 trang có phải là static hay không (tức là có thể `pre-render` được hay không) bằng cách có sử dụng hàm `getServerSideProps` hoặc hàm `getInitialProps`, Nếu **có sử dụng** thì nó **không phải** là automatic static optimization (tức là nó không pre-render được)
+- Source : https://nextjs.org/docs/pages/building-your-application/rendering/automatic-static-optimization
+
+![ASO](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712560455/NextJs%20%5BPage%20routers%5D/Screenshot_3_u19hqq.png)
+
+```php
+export default function AboutPage() {
+  const router = useRouter()
+
+  console.log('About query: ', router.query)
+
+  return (
+    <div>
+      About Page
+      <Link href="/">Go to home pagw</Link>
+    </div>
+  )
+}
+
+```
+
+![Log](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712561796/NextJs%20%5BPage%20routers%5D/Screenshot_5_wnzkio.png)
+
+Note: với ASO nếu sử dụng router.query thì object query sẽ là empty, sau khi hydration nó sẽ trigger 1 lần update nữa nếu object query đó có sự thay đổi, còn đối với Not ASO thì object query lúc nào cũng có giá trị (khác empty)
+
+### Khác nhau giữa khi build page với ASO và Not ASO
+
+#### With ASO
+
+- **KHONG** có sự tham gia của hàm `getServerSideProps`
+
+![Build](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712561433/NextJs%20%5BPage%20routers%5D/Screenshot_4_v2nsma.png)
+
+- Khi chạy lệnh `build` với những page được xác định là pre-render sẽ tạo ra những file `HTML`
+
+#### Without ASO (Not ASO)
+
+- **CO** sự tham gia của hàm `getServerSideProps`
+
+```php
+
+export default function AboutPage({}: Props) {
+  const router = useRouter()
+
+  console.log('About query: ', router.query)
+
+  return (
+    <div>
+      About Page
+      <Link href="/">Go to home pagw</Link>
+    </div>
+  )
+}
+
+export async function getServerSideProps({ req, res }) {
+  return {
+    props: {}, // will be passed to the page component as props
+  }
+}
+
+```
+
+![NotASO](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712562455/NextJs%20%5BPage%20routers%5D/Screenshot_6_vvrvpc.png)
+
+Khi build sẽ tạo ra file `JS`
+
+![Log NotASO](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712562610/NextJs%20%5BPage%20routers%5D/Screenshot_7_jdamm9.png)
+
+- Với _Not ASO_ thì luôn luôn có giá trị trong object query
