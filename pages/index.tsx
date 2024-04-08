@@ -26,6 +26,8 @@ export default function Home() {
         <h1>Home page</h1>
         <button onClick={goToPostDetailPage}>Go to post detail page</button>
 
+        <p className="font-bold">Test</p>
+
         <div style={{ marginTop: '2000px' }}>
           <Link href="/about" prefetch={false}>
             Go to about page
