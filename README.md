@@ -239,3 +239,69 @@ Khi build sẽ tạo ra file `JS`
 ![Log NotASO](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712562610/NextJs%20%5BPage%20routers%5D/Screenshot_7_jdamm9.png)
 
 - Với _Not ASO_ thì luôn luôn có giá trị trong object query
+
+## SSG - Static Site Generation
+
+- Build ra những file HTML khi chạy lệnh build, khi deploy lên server thì nó sẽ host sẵn các file HTML đó rồi, user request lên sẽ trả về file HTML đó là xong (supper fast)
+
+![Overview](https://res.cloudinary.com/dbcwtjvf3/image/upload/v1712567425/NextJs%20%5BPage%20routers%5D/Screenshot_8_rlyztc.png)
+
+1. Chỉ có HTML, không có JSON Data
+2. Muốn có JSON Data thì dùng hàm `getStaticProps`
+3. Muốn có JSON Data và generate ra được nhiều đường dẫn khác nhau thi dùng `getStaticProps` + `getStaticPaths`
+
+**_Note_**:
+
+- Nếu page của bạn phụ thuộc vào external data thì dùng `getStaticProps`
+- Nếu đường dẫn page của bạn phụ thuộc vào external data thì dùng `getStaticPaths` vd: blogs -> blog1, blog2
+- Không thể kết hợp `getServerSideProps` với `getStaticProps`, `getStaticPaths` (Không trộn SSG với SSR)
+- Luôn ưu tiên sử dụng SSG thay vì SSR
+
+**_Code example_**
+
+> getStaticProps
+
+```php
+
+import { GetStaticProps, GetStaticPropsContext } from 'next'
+import React from 'react'
+
+type PostListPageProps = {
+  posts: any[]
+}
+
+export default function PostListPage({ posts }: PostListPageProps) {
+  return (
+    <div>
+      <h1>PostListPage</h1>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>{post.title}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export const getStaticProps: GetStaticProps<PostListPageProps> = async (context: GetStaticPropsContext) => {
+  // This function from server side and run at build time (on production env)
+  // On development env always run this function when request
+
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts?_page=1&_limit=10')
+  const data = await response.json()
+
+  // you only see the log on the server (on your terminal) not on browser
+  console.log({ data })
+
+  // Recommend: Take necessary data for props to display on page
+  // For example I need id and title field
+  const necessaryData = data.map((item: any) => ({ id: item.id, title: item.title }))
+
+  return {
+    props: {
+      posts: necessaryData,
+    },
+  }
+}
+
+```
